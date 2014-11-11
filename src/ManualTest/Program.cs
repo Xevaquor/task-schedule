@@ -1,50 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using TaskSchedule.Algo;
 
 namespace ManualTest
 {
-    class Program
+    public class Program
     {
+        private static readonly IEnumerable<Processor> ProcessorSource = Processor.CreateFromNames("Aries", "Taurus",
+            "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio",
+            "Sagittarius", "Capricorn", "Aquarius", "Pisces", "Ophiuchus");
+
+
         static void Main(string[] args)
         {
-            //             0  1  2  3  4
-            int[] jobs = { 5, 4, 3, 2, 5 };
-            int cpuCount = 6;
+            var jobs = new[] { 1, 1 };
+            var cpus = ProcessorSource.Take(3).ToList();
 
-            var algo = new BruteForceScheduler();
+            var bfs = new BruteForceScheduler();
 
-            var result = algo.Schedule(jobs, cpuCount);
-
-            Console.WriteLine(result.ProcessingTime);
-            PrintSchedule(result.Schedule, jobs);
-
+            var result = bfs.Schedule(jobs, cpus);
+            Console.WriteLine("N-tuples to check {0}", (int)Math.Pow(cpus.Count, jobs.Count()));
+            PrintSchedule(result, jobs);
             Console.ReadLine();
         }
 
-        static void PrintSchedule(Dictionary<char, List<int>> schedule, int[] jobs)
+        public static void PrintArray(int[] arr)
         {
-            foreach (var cpu in schedule.Keys.OrderBy(x => x))
-            {
-                Console.Write("\nCPU: {0}: ", cpu);
-                Console.Write(string.Join(" ", schedule[cpu]));
-            }
-            Console.WriteLine("\nGRAPHHHHHH");
+            Console.WriteLine(string.Join(" ", arr));
+        }
 
-            foreach (var cpu in schedule.Keys.OrderBy(x => x))
+        static void PrintSchedule(SchedulingResult sr, int[] jobCosts)
+        {
+            Console.WriteLine("Total processing time: {0}", sr.ProcessingTime);
+
+            foreach (var cpu in sr.Schedule.Keys)
             {
-                Console.Write("\nCPU: {0}: ", cpu);
-                for (int i = 0; i < schedule[cpu].Count; i++)
+                Console.Write("{0}: ", cpu.Name.PadLeft(10));
+                int counter = 0;
+                foreach (var job in sr.Schedule[cpu].Jobs)
                 {
-                    int val = jobs[schedule[cpu][i]];
-                    char mark = i % 2 == 0 ? '@' : '#';
-                    Console.Write(new string( Enumerable.Repeat(mark, val).ToArray()));
-                    
+                    if (counter++ % 2 == 0)
+                        Console.Write(new string('#', jobCosts[job]));
+                    else
+                        Console.Write(new string('@', jobCosts[job]));
                 }
+
+                Console.WriteLine();
             }
         }
     }
 }
+
