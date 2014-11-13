@@ -17,13 +17,19 @@ namespace ManualTest
 
         static void Main(string[] args)
         {
-            var jobs = new[] { 1, 1 };
+            var jobs = new[] { 1,2,3,5,7,11,13,17,19,40 }.ToArray();
             var cpus = ProcessorSource.Take(3).ToList();
 
             var bfs = new BruteForceScheduler();
+            var ls = new ListScheduler();
 
             var result = bfs.Schedule(jobs, cpus);
             Console.WriteLine("N-tuples to check {0}", (int)Math.Pow(cpus.Count, jobs.Count()));
+            PrintSchedule(result, jobs);
+
+            Console.WriteLine("============================");
+
+            result = ls.Schedule(jobs, cpus);
             PrintSchedule(result, jobs);
             Console.ReadLine();
         }

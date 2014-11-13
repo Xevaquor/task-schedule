@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="BruteForceScheduler.cs" />
     <Compile Include="IScheduler.cs" />
+    <Compile Include="ListScheduler.cs" />
     <Compile Include="NTupleGenerator.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

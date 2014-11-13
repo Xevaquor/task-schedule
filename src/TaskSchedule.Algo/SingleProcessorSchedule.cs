@@ -11,6 +11,13 @@ namespace TaskSchedule.Algo
         public SingleProcessorSchedule()
         {
             Jobs = new List<int>();
+            ProcessingTime = 0;
+        }
+
+        public void Append(int job, int jobExecutionTime)
+        {
+            Jobs.Add(job);
+            ProcessingTime += jobExecutionTime;
         }
     }
 }
