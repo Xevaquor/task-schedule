@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Humanizer;
 using TaskSchedule.Algo;
 
 namespace ManualTest
@@ -17,20 +19,30 @@ namespace ManualTest
 
         static void Main(string[] args)
         {
+            Benchmark b = new Benchmark();
             var jobs = new[] { 1,2,3,5,7,11,13,17,19,40 }.ToArray();
             var cpus = ProcessorSource.Take(3).ToList();
 
             var bfs = new BruteForceScheduler();
             var ls = new ListScheduler();
 
-            var result = bfs.Schedule(jobs, cpus);
+            SchedulingResult result = null;
+            var x = b.MeasureExecutionTime(() =>
+            {
+                result = bfs.Schedule(jobs, cpus);
+            });
+
             Console.WriteLine("N-tuples to check {0}", (int)Math.Pow(cpus.Count, jobs.Count()));
             PrintSchedule(result, jobs);
+            Console.WriteLine(x.Humanize());
 
             Console.WriteLine("============================");
-
-            result = ls.Schedule(jobs, cpus);
+            x = b.MeasureExecutionTime(() =>
+            {
+                result = ls.Schedule(jobs, cpus);
+            });
             PrintSchedule(result, jobs);
+            Console.WriteLine(x.Humanize(culture: new CultureInfo("pl-PL")));
             Console.ReadLine();
         }
 

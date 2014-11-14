@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Benchmark.cs" />
     <Compile Include="BruteForceScheduler.cs" />
     <Compile Include="IScheduler.cs" />
     <Compile Include="ListScheduler.cs" />
