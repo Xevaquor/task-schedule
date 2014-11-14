@@ -7,9 +7,9 @@ using System.Text;
 
 namespace TaskSchedule.Algo
 {
-    public class Benchmark
+    public static class Benchmark
     {
-        public TimeSpan MeasureExecutionTime(Action func)
+        public static TimeSpan MeasureExecutionTime(Action func)
         {
             GC.Collect();
             var sw = Stopwatch.StartNew();

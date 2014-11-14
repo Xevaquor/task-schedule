@@ -1,15 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
+using CommandLine;
 using Humanizer;
 using TaskSchedule.Algo;
 
 namespace ManualTest
 {
+    class CommandLineArgs
+    {
+        [Option('m', "machines", DefaultValue = 2, Required = false)]
+        public int ProcessorCount { get; set; }
+
+        [ValueList(typeof(List<string>), MaximumElements = 1)]
+        public IList<string> InputFiles { get; set; } 
+
+        [ParserState]
+        public ParserState State { get; set; }
+    }
+
     public class Program
     {
         private static readonly IEnumerable<Processor> ProcessorSource = Processor.CreateFromNames("Aries", "Taurus",
@@ -19,31 +35,62 @@ namespace ManualTest
 
         static void Main(string[] args)
         {
-            Benchmark b = new Benchmark();
-            var jobs = new[] { 1,2,3,5,7,11,13,17,19,40 }.ToArray();
-            var cpus = ProcessorSource.Take(3).ToList();
+            var parsedArgs = new CommandLineArgs();
+            Parser.Default.ParseArguments(args, parsedArgs);
 
-            var bfs = new BruteForceScheduler();
-            var ls = new ListScheduler();
-
-            SchedulingResult result = null;
-            var x = b.MeasureExecutionTime(() =>
+            if (parsedArgs.InputFiles.Count == 0)
             {
-                result = bfs.Schedule(jobs, cpus);
-            });
-
-            Console.WriteLine("N-tuples to check {0}", (int)Math.Pow(cpus.Count, jobs.Count()));
-            PrintSchedule(result, jobs);
-            Console.WriteLine(x.Humanize());
-
-            Console.WriteLine("============================");
-            x = b.MeasureExecutionTime(() =>
+                InteractiveMode();
+            }
+            else
             {
-                result = ls.Schedule(jobs, cpus);
-            });
-            PrintSchedule(result, jobs);
-            Console.WriteLine(x.Humanize(culture: new CultureInfo("pl-PL")));
+                BatchMode(parsedArgs.ProcessorCount, parsedArgs.InputFiles.Single());
+            }
+        }
+
+        private static void BatchMode(int processorCount, string filename)
+        {
+            Console.WriteLine("Batch mode with {0} machines. Using both algorithms", processorCount);
+            int[] jobs = File.ReadAllText(filename).Split(new[] {' ', '\t', '\r', '\n'})
+                .Select(int.Parse).ToArray();
+
+            Console.WriteLine();
+            Console.WriteLine("Brute force. N-tuples to check: {0}",
+                (int)Math.Pow(processorCount, jobs.Length));
+            DoScheduling(jobs, processorCount, new BruteForceScheduler());
+            Console.WriteLine("\nList scheduler.");
+            DoScheduling(jobs, processorCount, new ListScheduler());
+        }
+
+        private static void InteractiveMode()
+        {
+            Console.Write("How many machines? ");
+            int processorCount = int.Parse(Console.ReadLine());
+            Console.WriteLine("Interactive mode with {0} machines. Using both algorithms.", processorCount);
+            Console.WriteLine("Plase type lenghts of tasks. [ENTER] to accept.");
+            string times = Console.ReadLine();
+            int[] jobs =
+                times.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse).ToArray();
+
+            Console.WriteLine();
+            Console.WriteLine("Brute force. N-tuples to check: {0}",
+                (int) Math.Pow(processorCount, jobs.Length));
+            DoScheduling(jobs, processorCount, new BruteForceScheduler());
+            Console.WriteLine("\nList scheduler.");
+            DoScheduling(jobs, processorCount, new ListScheduler());
+
+            Console.WriteLine("[ENTER] to exit.");
             Console.ReadLine();
+        }
+
+        private static void DoScheduling(int[] jobs, int processorCount, IScheduler scheduler)
+        {
+            SchedulingResult result = null;
+            var time = Benchmark.MeasureExecutionTime(() =>
+               result = scheduler.Schedule(jobs, ProcessorSource.Take(processorCount).ToList()));
+            PrintSchedule(result, jobs);
+            Console.WriteLine("Scheduling time: {0}", time.Humanize());
         }
 
         public static void PrintArray(int[] arr)
