@@ -7,12 +7,12 @@ namespace TaskSchedule.Algo
     {
         public IEnumerable<int[]> GenerateNTuples(int digits, int @base)
         {
-            var iterations = (int)Math.Pow(@base, digits);
+            var iterations = (ulong)Math.Pow(@base, digits);
             
             var tuple = new int[digits];
             yield return tuple;
             
-            for (int i = 0; i < iterations - 1; i++)
+            for (ulong i = 1; i < iterations; i++)
             {
                 tuple = Next(tuple, 0, @base);
                 yield return tuple;

@@ -56,7 +56,7 @@ namespace ManualTest
 
             Console.WriteLine();
             Console.WriteLine("Brute force. N-tuples to check: {0}",
-                (int)Math.Pow(processorCount, jobs.Length));
+                (ulong)Math.Pow(processorCount, jobs.Length));
             DoScheduling(jobs, processorCount, new BruteForceScheduler());
             Console.WriteLine("\nList scheduler.");
             DoScheduling(jobs, processorCount, new ListScheduler());
@@ -75,7 +75,7 @@ namespace ManualTest
 
             Console.WriteLine();
             Console.WriteLine("Brute force. N-tuples to check: {0}",
-                (int) Math.Pow(processorCount, jobs.Length));
+                (ulong) Math.Pow(processorCount, jobs.Length));
             DoScheduling(jobs, processorCount, new BruteForceScheduler());
             Console.WriteLine("\nList scheduler.");
             DoScheduling(jobs, processorCount, new ListScheduler());
