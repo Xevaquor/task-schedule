@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +13,13 @@ namespace DarwinManualTest
         private int step = 1;
         private readonly FitnessFunc fitness;
         private readonly int populationSize;
+        private StreamWriter file;
 
         public GeneticAlgorithm(FitnessFunc fitnessFunc, int populationSize)
         {
             this.fitness = fitnessFunc;
             this.populationSize = populationSize;
+            file = new StreamWriter("results");
         }
 
         public void Evolve(int steps)
@@ -52,6 +55,11 @@ namespace DarwinManualTest
          //   Console.WriteLine("After mutation");
             new Mutator().Mutate(ref newGeneration);
          //   Console.WriteLine(newGeneration.ToString(fitness));
+            file.WriteLine("{2} {0} {1}", newGeneration.GetPopulationFitnessSum(fitness)/
+                                      newGeneration.Individuals.Count,
+                newGeneration.Individuals.Max(x => x.GetFitnessLevel(fitness)), step);
+            file.Flush();
+
             return newGeneration;
         }
 

@@ -15,7 +15,7 @@ namespace DarwinManualTest
             int[] array = new int[1];
             ind.Chromosome.CopyTo(array, 0);
             var x = array[0];
-            return -(x - 17)*(x - 17) + 500;
+            return (x - 17)*(x - 17) + 500;
         }
 
         static void Main(string[] args)

@@ -11,8 +11,8 @@ namespace Darwin
     public class Individual
     {
 
-        public static readonly int BITS_PER_CHROMOSOME = 5;
-        public static readonly Random RANDOM = new Random(42);
+        public static readonly int BITS_PER_CHROMOSOME = 10;
+        public static readonly Random RANDOM = new Random();
 
         public BitArray Chromosome { get; set; }
 
