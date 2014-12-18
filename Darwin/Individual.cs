@@ -12,7 +12,7 @@ namespace Darwin
     {
 
         public static readonly int BITS_PER_CHROMOSOME = 5;
-        public static readonly Random RANDOM = new Random();
+        public static readonly Random RANDOM = new Random(42);
 
         public BitArray Chromosome { get; set; }
 
@@ -70,10 +70,10 @@ namespace Darwin
         {
             var pivot = RANDOM.Next(1, Chromosome.Length);
 
-            var dd = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("CROSSING OVER {0} with {1} in {2}", this, partner, pivot);
-            Console.ForegroundColor = dd;
+            //var dd = Console.ForegroundColor;
+            //Console.ForegroundColor = ConsoleColor.Red;
+            //Console.WriteLine("CROSSING OVER {0} with {1} in {2}", this, partner, pivot);
+            //Console.ForegroundColor = dd;
 
             return new[] {Crossover(partner, pivot), partner.Crossover(this,pivot)};
         }

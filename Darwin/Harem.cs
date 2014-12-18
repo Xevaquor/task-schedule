@@ -9,7 +9,7 @@ namespace Darwin
 {
     public class Harem
     {
-        public static readonly double PARENTING_PROBABILITY = 1;
+        public static readonly double PARENTING_PROBABILITY = 0.75;
         private readonly FitnessFunc fitnessFunc;
         private readonly Population parents;
 
