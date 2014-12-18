@@ -12,11 +12,13 @@ typedef bitset<5> solution_t;
 
 
 double sex_probability = 0.75;
+double mutation_probability = 0.4;
 vector<solution_t> population;
 vector<int> fitness;
 vector<double> selection;
 vector<int> selected_for_reproduction;
 vector<int> harem;
+vector<solution_t> babies;
 
 solution_t random_solution()
 {
@@ -28,7 +30,7 @@ void selectHarem()
 	harem.clear();
 	for each (auto var in selected_for_reproduction)
 	{
-		if (rand() % 2 == 0)
+		if ((rand() % 100000) / 100000.0 < sex_probability)
 			harem.push_back(var);
 	}
 }
@@ -36,7 +38,7 @@ void selectHarem()
 solution_t make_baby(solution_t father, solution_t mother)
 {
 	auto pivot = (rand() % 4) + 1;
-	pivot = 5;
+	//pivot = 4;
 	cout << pivot << endl;
 	auto bits_from_father = (father >> pivot) << pivot;
 	auto bits_from_mother = mother & solution_t(_Pow_int(2, pivot) - 1);
@@ -58,11 +60,13 @@ solution_t make_baby(int a, int b)
 
 void solve_demographic_problem()
 {
+	babies.clear();
 	for each (auto var in harem)
 	{
 		auto partner = rand() % harem.size();
 
 		auto baby = make_baby(var, partner);
+		babies.push_back(baby);
 	}
 
 
@@ -72,6 +76,8 @@ long double f(int x)
 {
 	return 2 * x + 1;
 }
+
+vector<solution_t>
 
 int wheel_the_roulette(int fitness_sum)
 {
@@ -84,6 +90,32 @@ int wheel_the_roulette(int fitness_sum)
 	}
 	assert(i <= fitness.size());
 	return i - 1;
+}
+
+bool GetProbability(double p)
+{
+	return (rand() % 100000) / 100000.0 < p;
+}
+
+void chernobyl_population(vector<solution_t> &population)
+{
+	for each (auto item in population)
+	{
+		if (GetProbability(mutation_probability))
+		{
+			auto n = item.flip(rand() % 5);
+		}
+	}
+}
+
+void print_vec(const vector<solution_t> &vec, string title)
+{
+	cout << title << endl;
+	int i = 0;
+	for each (auto item in vec)
+	{
+		cout << i++ << ": " << item << "\tfitness:" << f((int) item.to_ulong())  << endl;
+	}
 }
 
 int main()
@@ -128,12 +160,27 @@ int main()
 		selected_for_reproduction.push_back(dd);
 		cout << dd << endl;
 	}
-	cout << "PORN\n";
 
-	auto mother = solution_t("10101");
-	auto father = solution_t("01010");
-	auto baby = make_baby( father, mother);
-	cout << baby;
+	selectHarem();
+	solve_demographic_problem();
+
+	auto wholeOfNewPopulation = vector<solution_t>();
+	wholeOfNewPopulation.insert(wholeOfNewPopulation.end(), babies.begin(), babies.end());
+	wholeOfNewPopulation.insert(wholeOfNewPopulation.end(), population.begin(), population.end());
+
+	print_vec(wholeOfNewPopulation, "Population after reproduction");
+	chernobyl_population(wholeOfNewPopulation);
+	print_vec(wholeOfNewPopulation, "After mutation");
+
+
+
+
+	//cout << "PORN\n";
+
+	//auto mother = solution_t("11111");
+	//auto father = solution_t("00000");
+	//auto baby = make_baby( father, mother);
+	//cout << baby;
 		
 
 
