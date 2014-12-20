@@ -8,7 +8,13 @@ namespace Darwin
 {
     public class Mutator
     {
-        public static readonly double MUTATION_RATE = 0.05;
+        public static readonly double MUTATION_RATE = 0.1;
+        private readonly int machinesCount;
+
+        public Mutator(int machinesCount)
+        {
+            this.machinesCount = machinesCount;
+        }
 
         public void Mutate(ref Population population)
         {
@@ -23,7 +29,7 @@ namespace Darwin
                 {
                     if (Individual.RANDOM.NextDouble() < MUTATION_RATE)
                     {
-                        individual.Chromosome[i] = !individual.Chromosome[1];
+                        individual.Chromosome[i] = Individual.RANDOM.Next(machinesCount);
                     }
                 }
 #if PARALLEL_MUTATE

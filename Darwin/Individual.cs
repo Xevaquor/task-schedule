@@ -10,45 +10,46 @@ namespace Darwin
     public delegate double FitnessFunc(Individual individual);
     public class Individual
     {
+        public static readonly Random RANDOM = new Random(42);
 
-        public static readonly int BITS_PER_CHROMOSOME = 10;
-        public static readonly Random RANDOM = new Random(17);
-
-        public BitArray Chromosome { get; set; }
+        public int[] Chromosome { get; set; }
 
         public double GetFitnessLevel(FitnessFunc fitnessFunc)
         {
             return fitnessFunc(this);
         }
 
-        public Individual()
+        public Individual(int chromosomeLength)
         {
-            Chromosome = new BitArray(BITS_PER_CHROMOSOME);
+            Chromosome = new int[chromosomeLength];
         }
 
-        public static Individual GetRandomIndividual()
+        public static Individual GetRandomIndividual(int chromosomeLength, int machineCount)
         {
-            var ind = new Individual();
-            for (int i = 0; i < BITS_PER_CHROMOSOME; i++)
+            var ind = new Individual(chromosomeLength);
+            for (int i = 0; i < chromosomeLength; i++)
             {
-                ind.Chromosome.Set(i, RANDOM.NextDouble() < 0.5);
+                //ind.Chromosome.Set(i, RANDOM.NextDouble() < 0.5);
+                ind.Chromosome[i] = RANDOM.Next(0, machineCount);
             }
             return ind;
         }
 
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            for (int i = 0; i < BITS_PER_CHROMOSOME; i++)
-            {
-                sb.Append(Chromosome[i] ? '1' : '0');
-            }
-            return sb.ToString();
-        }
+        //public override string ToString()
+        //{
+        //    return String.Join(" ", Chromosome);
+        //    var sb = new StringBuilder();
+        //    for (int i = 0; i < BITS_PER_CHROMOSOME; i++)
+        //    {
+        //        sb.Append(Chromosome[i]);
+
+        //    }
+        //    return sb.ToString();
+        //}
 
         public Individual Crossover(Individual partner, int pivot)
         {
-            var geneA = new BitArray(this.Chromosome);
+            /*var geneA = new BitArray(this.Chromosome);
             var geneB = new BitArray(partner.Chromosome);
             var ones = Enumerable.Repeat(true, pivot).ToList();
             var zeros = Enumerable.Repeat(false, BITS_PER_CHROMOSOME - pivot).ToList();
@@ -59,7 +60,14 @@ namespace Darwin
             var finalChromo = new BitArray(BITS_PER_CHROMOSOME);
             finalChromo.Or(geneA.And(maskA));
             finalChromo.Or(geneB.And(maskB));
-            return new Individual { Chromosome = finalChromo };
+            return new Individual { Chromosome = finalChromo };*/
+
+            var child = new Individual(this.Chromosome.Length);
+            for (int i = 0; i < child.Chromosome.Length; i++)
+            {
+                child.Chromosome[i] = i < pivot ? this.Chromosome[i] : partner.Chromosome[i];
+            }
+            return child;
         }
         public Individual Crossover(Individual partner)
         {
@@ -75,7 +83,7 @@ namespace Darwin
             //Console.WriteLine("CROSSING OVER {0} with {1} in {2}", this, partner, pivot);
             //Console.ForegroundColor = dd;
 
-            return new[] {Crossover(partner, pivot), partner.Crossover(this,pivot)};
+            return new[] { Crossover(partner, pivot), partner.Crossover(this, pivot) };
         }
     }
 }
