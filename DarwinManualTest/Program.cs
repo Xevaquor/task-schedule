@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Darwin;
+using TaskSchedule.Algo;
 
 namespace DarwinManualTest
 {
@@ -18,14 +19,17 @@ namespace DarwinManualTest
             return (x - 17)*(x - 17) + 500;
         }
 
+
+
         static void Main(string[] args)
         {
+            var time = Benchmark.MeasureExecutionTime(() =>
+            {
+                var ga = new GeneticAlgorithm(fitness, 100);
+                ga.Evolve(5000);
+            });
 
-            var ga = new GeneticAlgorithm(fitness, 50);
-            ga.Evolve(500);
-
-
-
+            Console.WriteLine(time);
             Console.ReadLine();
         }
     }

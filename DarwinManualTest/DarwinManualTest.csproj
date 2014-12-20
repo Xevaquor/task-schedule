@@ -53,6 +53,10 @@
       <Project>{3908725A-E809-4D9E-BB3C-BFB37119B2FE}</Project>
       <Name>Darwin</Name>
     </ProjectReference>
+    <ProjectReference Include="..\src\TaskSchedule.Algo\TaskSchedule.Algo.csproj">
+      <Project>{2EFD58D8-2217-4276-9D57-ECA1E34D7B05}</Project>
+      <Name>TaskSchedule.Algo</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

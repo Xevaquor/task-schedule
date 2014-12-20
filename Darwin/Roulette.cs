@@ -22,7 +22,8 @@ namespace Darwin
             var selected = new List<Individual>(howMany);
             for (int i = 0; i < howMany; i++)
             {
-                selected.Add(population.Individuals[SelectIndex(population.GetPopulationFitnessSum(fitnessFunc))]);
+                int selectedIndex = SelectIndex(population.GetPopulationFitnessSum(fitnessFunc));   
+                selected.Add(population.Individuals[selectedIndex]);
             }
             return selected;
         }
@@ -30,13 +31,13 @@ namespace Darwin
         private int SelectIndex(double maxValue)
         {
             int index = 0;
-            double pick = Individual.RANDOM.NextDouble()*maxValue;
+            double pick = Individual.RANDOM.NextDouble() * maxValue;
             while (pick > 0)
             {
-                pick -= population.Individuals[index].GetFitnessLevel(fitnessFunc);
                 index++;
+                pick -= population.Individuals[index-1].GetFitnessLevel(fitnessFunc);
             }
-            return index - 1;    
+            return Math.Max(index - 1, 0);    
         }
 
         public static string ProbabilityToString(Population p, FitnessFunc fitnessFunc)

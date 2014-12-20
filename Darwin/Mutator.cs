@@ -12,8 +12,13 @@ namespace Darwin
 
         public void Mutate(ref Population population)
         {
+#if PARALLEL_MUTATE
+            Parallel.ForEach(population.Individuals, individual =>
+            {
+#else
             foreach (var individual in population.Individuals)
             {
+#endif
                 for (int i = 0; i < individual.Chromosome.Length; i++)
                 {
                     if (Individual.RANDOM.NextDouble() < MUTATION_RATE)
@@ -21,7 +26,12 @@ namespace Darwin
                         individual.Chromosome[i] = !individual.Chromosome[1];
                     }
                 }
+#if PARALLEL_MUTATE
+            //});
+#else
             }
+#endif
+
         }
     }
 }

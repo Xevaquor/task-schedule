@@ -12,7 +12,7 @@ namespace Darwin
     {
 
         public static readonly int BITS_PER_CHROMOSOME = 10;
-        public static readonly Random RANDOM = new Random();
+        public static readonly Random RANDOM = new Random(17);
 
         public BitArray Chromosome { get; set; }
 

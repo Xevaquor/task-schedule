@@ -34,7 +34,7 @@ namespace DarwinManualTest
 
         Population Step(Population generation)
         {
-            Extensions.WriteColorLine(ConsoleColor.Green, "======={0} Step======", step++);
+            //Extensions.WriteColorLine(ConsoleColor.Green, "======={0} Step======", step++);
 
             //Console.WriteLine(generation.ToString(fitness));
            // Console.WriteLine("Population fitness sum: {0}",
@@ -55,6 +55,9 @@ namespace DarwinManualTest
          //   Console.WriteLine("After mutation");
             new Mutator().Mutate(ref newGeneration);
          //   Console.WriteLine(newGeneration.ToString(fitness));
+
+            ++step;
+
             file.WriteLine("{2} {0} {1}", newGeneration.GetPopulationFitnessSum(fitness)/
                                       newGeneration.Individuals.Count,
                 newGeneration.Individuals.Max(x => x.GetFitnessLevel(fitness)), step);
