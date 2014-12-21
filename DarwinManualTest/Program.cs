@@ -14,10 +14,10 @@ namespace DarwinManualTest
     {
         static void Main(string[] args)
         {
-            const int MACHINES = 5;
-            const int STEPS_TO_PERFORM = 10;
+            const int MACHINES = 10;
+            const int STEPS_TO_PERFORM = 2000;
             const int POPULATION_SIZE = 100;
-            int[] jobs = File.ReadAllText("data.txt").Split(new[] { ' ', '\t', '\r', '\n' })
+            int[] jobs = File.ReadAllText("m20.txt").Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse).ToArray();
 
             PrintTestCaseSummary(jobs.Length, MACHINES, STEPS_TO_PERFORM, POPULATION_SIZE, jobs);

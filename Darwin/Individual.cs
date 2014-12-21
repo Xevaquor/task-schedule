@@ -10,7 +10,7 @@ namespace Darwin
     public delegate double FitnessFunc(Individual individual);
     public class Individual
     {
-        public static readonly Random RANDOM = new Random(42);
+        public static readonly Random RANDOM = new Random();
 
         public int[] Chromosome { get; set; }
 
@@ -35,17 +35,15 @@ namespace Darwin
             return ind;
         }
 
-        //public override string ToString()
-        //{
-        //    return String.Join(" ", Chromosome);
-        //    var sb = new StringBuilder();
-        //    for (int i = 0; i < BITS_PER_CHROMOSOME; i++)
-        //    {
-        //        sb.Append(Chromosome[i]);
-
-        //    }
-        //    return sb.ToString();
-        //}
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i < Chromosome.Length; i++)
+            {
+                sb.Append(Chromosome[i]);
+            }
+            return sb.ToString();
+        }
 
         public Individual Crossover(Individual partner, int pivot)
         {

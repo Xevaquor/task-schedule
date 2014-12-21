@@ -19,8 +19,7 @@ namespace Darwin
         public void Mutate(ref Population population)
         {
 #if PARALLEL_MUTATE
-            Parallel.ForEach(population.Individuals, individual =>
-            {
+            population.Individuals.AsParallel().ForAll( individual => {
 #else
             foreach (var individual in population.Individuals)
             {
@@ -33,7 +32,7 @@ namespace Darwin
                     }
                 }
 #if PARALLEL_MUTATE
-            //});
+            });
 #else
             }
 #endif

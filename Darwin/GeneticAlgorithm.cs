@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Darwin
@@ -10,11 +12,13 @@ namespace Darwin
         public readonly int MachinesCount;
         public readonly int JobsCount;
         private readonly int stepsToPerform;
-        
+
         private int step = 1;
         private readonly FitnessFunc fitness;
         private readonly int populationSize;
         private StreamWriter file;
+
+        private Individual bestSoFar;
 
         public GeneticAlgorithm(int[] jobs, int machinesCount, int stepsToPerform, int populationSize)
         {
@@ -54,10 +58,12 @@ namespace Darwin
         public int Evolve()
         {
             var generation = Population.GetRandomPopulation(populationSize, JobsCount, MachinesCount);
+            bestSoFar = generation.Individuals[0];
             for (step = 0; step <= stepsToPerform; step++)
             {
                 generation = Step(generation);
             }
+            generation.Individuals.Add(bestSoFar);
             return generation.Individuals.Min(x => ComputeSchedulingTime(x));
             //Console.WriteLine(generation.ToString(fitness));
         }
@@ -78,17 +84,26 @@ namespace Darwin
 
             var h = new Harem(fitness, np);
             var newGeneration = h.Reproduce();
+            
+            //Console.WriteLine("After reproduction");
+            //Console.WriteLine(newGeneration.ToString());
 
-             //Console.WriteLine("After reproduction");
-             // Console.WriteLine(newGeneration.ToString(fitness));
-
-             //  Console.WriteLine("After mutation");
+            //Console.WriteLine("After mutation");
             new Mutator(MachinesCount).Mutate(ref newGeneration);
-               //Console.WriteLine(newGeneration.ToString(fitness));
+            //Console.WriteLine(newGeneration.ToString());
 
+
+#if STORE_BEST_SO_FAR
+            var sorted = newGeneration.Individuals.OrderBy(ComputeSchedulingTime);
+            var currentBest = sorted.First();
+            if (ComputeSchedulingTime(currentBest) < ComputeSchedulingTime(bestSoFar))
+            {
+                bestSoFar = currentBest;
+            }
+#endif
 
 #if LOG_PLOT
-            file.WriteLine("{2} {0} {1}", newGeneration.Individuals.Average(x=> ComputeSchedulingTime(x)),
+            file.WriteLine("{2} {0} {1}", newGeneration.Individuals.Average(x => ComputeSchedulingTime(x)),
                 newGeneration.Individuals.Min(x => ComputeSchedulingTime(x)), step);
             file.Flush();
 #endif
