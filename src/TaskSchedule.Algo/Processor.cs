@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace TaskSchedule.Algo
 {
@@ -8,6 +9,7 @@ namespace TaskSchedule.Algo
     {
         public string Name { get; set; }
 
+        [DebuggerStepThrough]
         public Processor(string name)
         {
             this.Name = name;

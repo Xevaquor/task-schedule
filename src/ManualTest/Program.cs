@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using CommandLine;
 using Humanizer;
 using TaskSchedule.Algo;
+using TaskSchedule.Algo.Schedulers;
 
 namespace ManualTest
 {
@@ -79,6 +80,8 @@ namespace ManualTest
             DoScheduling(jobs, processorCount, new BruteForceScheduler());
             Console.WriteLine("\nList scheduler.");
             DoScheduling(jobs, processorCount, new ListScheduler());
+            Console.WriteLine("\nGenetic scheduler.");
+            DoScheduling(jobs, processorCount, new GeneticScheduler(1000,100));
 
             Console.WriteLine("[ENTER] to exit.");
             Console.ReadLine();

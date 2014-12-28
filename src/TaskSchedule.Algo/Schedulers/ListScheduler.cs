@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
-namespace TaskSchedule.Algo
+namespace TaskSchedule.Algo.Schedulers
 {
     public class ListScheduler : IScheduler
     {
@@ -28,6 +27,12 @@ namespace TaskSchedule.Algo
                 Schedule = schedules,
                 ProcessingTime = schedules.Values.Max(x => x.ProcessingTime)
             };
+        }
+
+
+        public string GetDescription(int machinesCount, int taskCount)
+        {
+            return "List scheduling algorithm";
         }
     }
 }

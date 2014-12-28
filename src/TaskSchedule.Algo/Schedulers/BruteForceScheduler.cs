@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace TaskSchedule.Algo
+namespace TaskSchedule.Algo.Schedulers
 {
     public class BruteForceScheduler : IScheduler
     {
@@ -28,6 +29,11 @@ namespace TaskSchedule.Algo
                 ProcessingTime = bestValue,
                 Schedule = GetSchedule(bestSchedule, bestValue, processors)
             };
+        }
+        
+        public string GetDescription(int machinesCount, int taskCount)
+        {
+            return string.Format("Brute force algorithm. N-tuples to check: {0}", Math.Pow(machinesCount, taskCount));
         }
 
         private Dictionary<Processor, SingleProcessorSchedule> GetSchedule(int[] tuple, int cost, List<Processor> processors)

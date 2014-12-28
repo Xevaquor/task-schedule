@@ -55,7 +55,7 @@ namespace Darwin
             return biases.Max();
         }
 
-        public int Evolve()
+        public Individual Evolve()
         {
             var generation = Population.GetRandomPopulation(populationSize, JobsCount, MachinesCount);
             bestSoFar = generation.Individuals[0];
@@ -64,7 +64,12 @@ namespace Darwin
                 generation = Step(generation);
             }
             generation.Individuals.Add(bestSoFar);
-            return generation.Individuals.Min(x => ComputeSchedulingTime(x));
+            var old = generation.Individuals.Min(x => ComputeSchedulingTime(x));
+            var best = generation.Individuals.OrderBy(ComputeSchedulingTime).First();
+            if(old != ComputeSchedulingTime(best))
+                throw new Exception();
+            return best;
+
             //Console.WriteLine(generation.ToString(fitness));
         }
 
