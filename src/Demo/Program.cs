@@ -67,7 +67,7 @@ namespace Demo
 
         private static void PrintSchedule(SchedulingResult sr, int[] jobCosts)
         {
-            if (machinesCount > 26)
+            if (jobCosts.Length > 25)
             {
                 Console.Write("Total processing time: ");
                  WriteColorLine(ConsoleColor.Yellow, "{0}", sr.ProcessingTime);
@@ -89,7 +89,7 @@ namespace Demo
             {
                 Console.Write("Total processing time: ");
                 WriteColorLine(ConsoleColor.Yellow, "{0}", sr.ProcessingTime);
-                char[] chars = "ABCDEFGHIJKLMNOPQRSTUWXYZ".ToCharArray();
+                char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
                 int c = 0;
                 foreach (var cpu in sr.Schedule.Keys)
                 {
