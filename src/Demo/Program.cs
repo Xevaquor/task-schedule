@@ -119,6 +119,10 @@ namespace Demo
             {
                 algorithms.Add(new GeneticScheduler(evolutionCount, populationSize));
             }
+            if (algoNames.Contains("dfs"))
+            {
+                algorithms.Add(new DfsScheduler());
+            }
         }
 
         private static void PrintTestCaseSummary()

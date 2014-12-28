@@ -77,11 +77,11 @@ namespace ManualTest
             Console.WriteLine();
             Console.WriteLine("Brute force. N-tuples to check: {0}",
                 (ulong) Math.Pow(processorCount, jobs.Length));
-            DoScheduling(jobs, processorCount, new BruteForceScheduler());
+           // DoScheduling(jobs, processorCount, new BruteForceScheduler());
             Console.WriteLine("\nList scheduler.");
             DoScheduling(jobs, processorCount, new ListScheduler());
-            Console.WriteLine("\nGenetic scheduler.");
-            DoScheduling(jobs, processorCount, new GeneticScheduler(1000,100));
+            Console.WriteLine("\nDFS scheduler.");
+            DoScheduling(jobs, processorCount, new DfsScheduler());
 
             Console.WriteLine("[ENTER] to exit.");
             Console.ReadLine();

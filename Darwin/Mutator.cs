@@ -8,7 +8,7 @@ namespace Darwin
 {
     public class Mutator
     {
-        public static readonly double MUTATION_RATE = 0.1;
+        public static readonly double MUTATION_RATE = 0.01;
         private readonly int machinesCount;
 
         public Mutator(int machinesCount)

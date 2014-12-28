@@ -49,8 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Benchmark.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Schedulers\BruteForceScheduler.cs" />
     <Compile Include="IScheduler.cs" />
+    <Compile Include="Schedulers\DFSScheduler.cs" />
     <Compile Include="Schedulers\GeneticScheduler.cs" />
     <Compile Include="Schedulers\ListScheduler.cs" />
     <Compile Include="NTupleGenerator.cs" />

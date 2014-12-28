@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace TaskSchedule.Algo
 {
@@ -7,7 +8,8 @@ namespace TaskSchedule.Algo
     {
         public IEnumerable<int[]> GenerateNTuples(int digits, int @base)
         {
-            var iterations = (ulong)Math.Pow(@base, digits);
+            //var iterations = (ulong)Math.Pow(@base, digits);
+            var iterations = BigInteger.Pow(@base, digits);
             
             var tuple = new int[digits];
             yield return tuple;
