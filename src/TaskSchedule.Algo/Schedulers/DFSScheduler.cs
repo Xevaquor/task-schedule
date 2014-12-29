@@ -19,7 +19,7 @@ namespace TaskSchedule.Algo.Schedulers
         private int[] bestSoFarTuple = null;
         private int[] jobs = null;
         private int machinesCount = -1;
-
+        object sync = new object();
         public SchedulingResult Schedule(int[] jobs, List<Processor> processors)
         {
             this.jobs = jobs;
@@ -28,10 +28,10 @@ namespace TaskSchedule.Algo.Schedulers
 
             for (int i = 0; i < jobs.Length; i++)
             {
-                buffer.Add((int)Math.Ceiling(jobs.Skip(i).Sum() * 1.0 / machinesCount * 0.9));
+                buffer.Add((int)Math.Ceiling(jobs.Skip(i).Sum() * 1.0 / machinesCount * 0.3));
             }
 
-            var root = new Node();
+            var root = new Node{1};
             Traverse(root);
 
 
@@ -44,7 +44,8 @@ namespace TaskSchedule.Algo.Schedulers
 
         private void Traverse(Node root)
         {
-            if (root.Count == 4)
+            
+            if (root.Count == 3)
             {
                 Console.WriteLine("Visitng " + string.Join(" ", root));
             }
@@ -54,11 +55,14 @@ namespace TaskSchedule.Algo.Schedulers
                 // mamy liść
                 // Console.WriteLine("Got leaf: " + string.Join(" ", root));
                 var leafValue = ComputeSchedule(root);
-                if (leafValue < bestSoFarValue)
                 {
-                    bestSoFarValue = leafValue;
-                    bestSoFarTuple = root.ToArray();
-                    Extensions.WriteColorLine(ConsoleColor.Green, string.Format("{0} New bound at {1}", bestSoFarValue, string.Join(" ", root)));
+                    if (leafValue < bestSoFarValue)
+                    {
+                        bestSoFarValue = leafValue;
+                        bestSoFarTuple = root.ToArray();
+                        Extensions.WriteColorLine(ConsoleColor.Green,
+                            string.Format("{0} New bound at {1}", bestSoFarValue, string.Join(" ", root)));
+                    }
                 }
 
                 return;
@@ -73,13 +77,10 @@ namespace TaskSchedule.Algo.Schedulers
                 return;
             }
 
-            foreach (var descendatn in GetDescendatns(root))
+            foreach (var d in GetDescendatns(root))
             {
-                Traverse(descendatn);
+                Traverse(d);
             }
-
-
-
         }
 
         List<int> buffer = new Node();
@@ -105,6 +106,15 @@ namespace TaskSchedule.Algo.Schedulers
         [DebuggerStepThrough]
         public IEnumerable<Node> GetDescendatns(Node node)
         {
+            if (node.Count == 2)
+            {
+                for (int i = 0; i < machinesCount - 1; i++)
+                {
+                    var desc = new Node(node) { i };
+                    yield return desc;
+                }
+            }
+
             for (int i = 0; i < machinesCount; i++)
             {
                 var desc = new Node(node) { i };

@@ -26,7 +26,7 @@ namespace DarwinManualTest
 
             PrintTestCaseSummary(jobs.Length, machinesCount, STEPS_TO_PERFORM, POPULATION_SIZE, jobs);
 
-            var darwin = new GeneticAlgorithm(jobs, machinesCount, STEPS_TO_PERFORM, POPULATION_SIZE);
+            var darwin = new GeneticAlgorithm(jobs, machinesCount, STEPS_TO_PERFORM, POPULATION_SIZE,0,0);
             var greedy = new ListScheduler();
             var brute = new BruteForceScheduler();
             

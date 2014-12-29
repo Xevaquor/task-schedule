@@ -26,7 +26,7 @@ namespace Demo
 
             PrintTestCaseSummary();
 
-            CreateAlgorithms(parsedArgs.Algorithms, parsedArgs.PopulationSize, parsedArgs.EvolutionCount);
+            CreateAlgorithms(parsedArgs.Algorithms, parsedArgs.PopulationSize, parsedArgs.EvolutionCount, parsedArgs.CrossoverProbability, parsedArgs.MutationProbability);
 
             foreach (var algorithm in algorithms)
             {
@@ -104,7 +104,7 @@ namespace Demo
             }
         }
 
-        private static void CreateAlgorithms(string[] algoNames, int populationSize, int evolutionCount)
+        private static void CreateAlgorithms(string[] algoNames, int populationSize, int evolutionCount, double crossoverProbability, double mutationProbability)
         {
             algorithms = new List<IScheduler>();
             if (algoNames.Contains("brute"))
@@ -117,7 +117,7 @@ namespace Demo
             }
             if (algoNames.Contains("genetic"))
             {
-                algorithms.Add(new GeneticScheduler(evolutionCount, populationSize));
+                algorithms.Add(new GeneticScheduler(evolutionCount, populationSize, crossoverProbability, mutationProbability));
             }
             if (algoNames.Contains("dfs"))
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Cache;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
@@ -25,7 +26,14 @@ namespace Demo
         [Option('e', "evolutions", DefaultValue = 100)]
         public int EvolutionCount { get; set; }
 
+        [Option('c', "crossover", DefaultValue = 0.75)]
+        public double CrossoverProbability { get; set; }
+
+        [Option('m', "mutation", DefaultValue = 0.01)]
+        public double MutationProbability { get; set; }
+
         [ParserState]
         public ParserState State { get; set; }
+
     }
 }

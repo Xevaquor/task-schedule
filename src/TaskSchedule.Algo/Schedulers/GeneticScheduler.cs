@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using Darwin;
@@ -11,11 +12,15 @@ namespace TaskSchedule.Algo.Schedulers
     {
         private GeneticAlgorithm darwin;
         private readonly int populationSize, evolutionSteps;
+        private readonly double crossoverProbability;
+        private readonly double mutationProbability;
 
-        public GeneticScheduler(int evolutionSteps, int populationSize)
+        public GeneticScheduler(int evolutionSteps, int populationSize, double crossoverProbability, double mutationProbability)
         {
             this.evolutionSteps = evolutionSteps;
             this.populationSize = populationSize;
+            this.crossoverProbability = crossoverProbability;
+            this.mutationProbability = mutationProbability;
         }
 
 
@@ -33,7 +38,7 @@ namespace TaskSchedule.Algo.Schedulers
 
         public SchedulingResult Schedule(int[] jobs, List<Processor> processors)
         {
-            darwin = new GeneticAlgorithm(jobs, processors.Count, evolutionSteps, populationSize);
+            darwin = new GeneticAlgorithm(jobs, processors.Count, evolutionSteps, populationSize, crossoverProbability, mutationProbability);
 
             var bestIdyvidual = darwin.Evolve();
             var bestValue = darwin.ComputeSchedulingTime(bestIdyvidual);
@@ -49,8 +54,8 @@ namespace TaskSchedule.Algo.Schedulers
 
         public string GetDescription(int machinesCount, int taskCount)
         {
-            return string.Format("Genetic algorithm. Population size: {0} evelotion steps: {1}", populationSize,
-                evolutionSteps);
+            return string.Format("Genetic algorithm. Population size: {0} evelotion steps: {1} Crossover rate {2:p}. Mutation rate: {3:p}", populationSize,
+                evolutionSteps, crossoverProbability, mutationProbability);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Darwin
 
         private Individual bestSoFar;
 
-        public GeneticAlgorithm(int[] jobs, int machinesCount, int stepsToPerform, int populationSize)
+        public GeneticAlgorithm(int[] jobs, int machinesCount, int stepsToPerform, int populationSize, double crossoverProbaility, double mutationProbability)
         {
             this.jobs = jobs;
             jobsSum = jobs.Sum();
@@ -29,6 +29,8 @@ namespace Darwin
             this.stepsToPerform = stepsToPerform;
             this.populationSize = populationSize;
             fitness = ComputeFitness;
+            Harem.PARENTING_PROBABILITY = crossoverProbaility;
+            Mutator.MUTATION_RATE = mutationProbability;
 
 #if LOG_PLOT
             file = new StreamWriter("result");
