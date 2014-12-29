@@ -26,6 +26,11 @@ namespace TaskSchedule.Algo.Schedulers
             machinesCount = processors.Count;
             //Seed();
 
+            for (int i = 0; i < jobs.Length; i++)
+            {
+                buffer.Add((int)Math.Ceiling(jobs.Skip(i).Sum() * 1.0 / machinesCount * 0.9));
+            }
+
             var root = new Node();
             Traverse(root);
 
@@ -39,11 +44,16 @@ namespace TaskSchedule.Algo.Schedulers
 
         private void Traverse(Node root)
         {
+            if (root.Count == 4)
+            {
+                Console.WriteLine("Visitng " + string.Join(" ", root));
+            }
+
             if (root.Count == jobs.Length)
             {
                 // mamy liść
                 // Console.WriteLine("Got leaf: " + string.Join(" ", root));
-                var leafValue = ComputeSchedule(root.ToArray());
+                var leafValue = ComputeSchedule(root);
                 if (leafValue < bestSoFarValue)
                 {
                     bestSoFarValue = leafValue;
@@ -57,23 +67,11 @@ namespace TaskSchedule.Algo.Schedulers
             // odwiedź
             //Console.WriteLine("Visiting " + string.Join(" ", root));
             // jeśli gorzej niż to co mamy to nie ma sensu grzebać dalej
-            var nodeValue = ComputeSchedule(root.ToArray());
+            var nodeValue = ComputeSchedule(root);
             if (nodeValue + estimate > bestSoFarValue)
             {
-                var deep = jobs.Length - root.Count;
-                var profit = BigInteger.Pow(machinesCount, deep);
-                if (profit > BigInteger.Parse("1000000000000000"))
-                {
-                    Extensions.WriteColorLine(ConsoleColor.Red, "CUTTING OFF " + profit);
-                    Extensions.WriteColorLine(ConsoleColor.Red, "CUTTING OFF " + string.Join(" ", root));
-                }
                 return;
-
             }
-
-
-
-
 
             foreach (var descendatn in GetDescendatns(root))
             {
@@ -84,9 +82,11 @@ namespace TaskSchedule.Algo.Schedulers
 
         }
 
+        List<int> buffer = new Node();
         private int ComputeEstimation(int used)
         {
-            return (int)Math.Ceiling(jobs.Skip(used).Sum() * 1.0 / machinesCount);
+            return buffer[used];
+            //return (int)Math.Ceiling(jobs.Skip(used).Sum() * 1.0 / machinesCount);
             //return jobs.Skip(used).Max();
         }
 
@@ -98,7 +98,7 @@ namespace TaskSchedule.Algo.Schedulers
             {
                 initialGuess[i] = (r.Next(machinesCount));
             }
-            bestSoFarValue = ComputeSchedule(initialGuess);
+            bestSoFarValue = ComputeSchedule(initialGuess.ToList());
             bestSoFarTuple = initialGuess;
         }
 
@@ -129,30 +129,16 @@ namespace TaskSchedule.Algo.Schedulers
         }
 
         // [DebuggerStepThrough]
-        private int ComputeSchedule(int[] tuple)
+        private int ComputeSchedule(List<int> tuple)
         {
-            object sync = new object();
             var costs = new int[machinesCount];
-#if DFS_PARALLEL_COMPUTE_SCHEDULE
 
-            Parallel.For(0, tuple.Length, i =>
+            for (int i = 0; i < tuple.Count; i++)
             {
-#else
-                        for (int i = 0; i < tuple.Length; i++)
-                        {
-#endif
-
                 var cost = jobs[i];
-
                 costs[tuple[i]] += cost;
-#if DFS_PARALLEL_COMPUTE_SCHEDULE
-            });
-#else
             }
-#endif
-
             return costs.Max();
-
         }
     }
 }
