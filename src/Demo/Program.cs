@@ -26,7 +26,7 @@ namespace Demo
 
             PrintTestCaseSummary();
 
-            CreateAlgorithms(parsedArgs.Algorithms, parsedArgs.PopulationSize, parsedArgs.EvolutionCount, parsedArgs.CrossoverProbability, parsedArgs.MutationProbability);
+            CreateAlgorithms(parsedArgs.Algorithms, parsedArgs.PopulationSize, parsedArgs.EvolutionCount, parsedArgs.CrossoverProbability, parsedArgs.MutationProbability, parsedArgs.DfsExecutionTime);
 
             foreach (var algorithm in algorithms)
             {
@@ -104,7 +104,7 @@ namespace Demo
             }
         }
 
-        private static void CreateAlgorithms(string[] algoNames, int populationSize, int evolutionCount, double crossoverProbability, double mutationProbability)
+        private static void CreateAlgorithms(string[] algoNames, int populationSize, int evolutionCount, double crossoverProbability, double mutationProbability, int dfsExecutionTime)
         {
             algorithms = new List<IScheduler>();
             if (algoNames.Contains("brute"))
@@ -121,7 +121,7 @@ namespace Demo
             }
             if (algoNames.Contains("dfs"))
             {
-                algorithms.Add(new DfsScheduler());
+                algorithms.Add(new DfsScheduler(TimeSpan.FromSeconds(dfsExecutionTime)));
             }
         }
 

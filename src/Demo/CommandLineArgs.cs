@@ -35,5 +35,7 @@ namespace Demo
         [ParserState]
         public ParserState State { get; set; }
 
+        [Option('t', "dfstime", DefaultValue = 20)]
+        public int DfsExecutionTime { get; set; }
     }
 }

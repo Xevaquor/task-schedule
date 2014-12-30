@@ -20,35 +20,58 @@ namespace TaskSchedule.Algo.Schedulers
         private int[] jobs = null;
         private int machinesCount = -1;
         object sync = new object();
+        private readonly TimeSpan? executionTime;
+        private Stopwatch stopwatch;
+
+        private List<Tuple<int, int>> sortAssign = new List<Tuple<int, int>>();
+
         public SchedulingResult Schedule(int[] jobs, List<Processor> processors)
         {
-            this.jobs = jobs;
+            for (int i = 0; i < jobs.Length; i++)
+            {
+                sortAssign.Add(new Tuple<int, int>(i, jobs[i]));
+            }
+            sortAssign = sortAssign.OrderByDescending(x => x.Item2).ToList();
+            this.jobs = jobs.OrderByDescending(x => x).ToArray();
+
+            //Console.WriteLine(string.Join(" ", this.jobs));
+
             machinesCount = processors.Count;
             //Seed();
 
             for (int i = 0; i < jobs.Length; i++)
             {
-                buffer.Add((int)Math.Ceiling(jobs.Skip(i).Sum() * 1.0 / machinesCount * 0.3));
+                buffer.Add((int)Math.Ceiling(this.jobs.Skip(i).Sum() * 1.0 / machinesCount * 0.3));
             }
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
 
-            var root = new Node{1};
+            var root = new Node { 1 };
             Traverse(root);
+            stopwatch.Stop();
 
+            var result = new int[bestSoFarTuple.Length];
+            for (int i = 0; i < bestSoFarTuple.Length; i++)
+            {
+                result[sortAssign[i].Item1] = bestSoFarTuple[i];
+            }
 
             return new SchedulingResult
             {
                 ProcessingTime = bestSoFarValue,
-                Schedule = GetSchedule(bestSoFarTuple, bestSoFarValue, processors)
+                Schedule = GetSchedule(result, bestSoFarValue, processors)
             };
         }
 
         private void Traverse(Node root)
         {
-            
-            if (root.Count == 3)
-            {
-                Console.WriteLine("Visitng " + string.Join(" ", root));
-            }
+
+            //if (root.Count == 2)
+            //{
+            //    Console.WriteLine("Visitng " + string.Join(" ", root));
+            //}
+
+
 
             if (root.Count == jobs.Length)
             {
@@ -60,8 +83,8 @@ namespace TaskSchedule.Algo.Schedulers
                     {
                         bestSoFarValue = leafValue;
                         bestSoFarTuple = root.ToArray();
-                        Extensions.WriteColorLine(ConsoleColor.Green,
-                            string.Format("{0} New bound at {1}", bestSoFarValue, string.Join(" ", root)));
+                        //Extensions.WriteColorLine(ConsoleColor.Green,
+                        //    string.Format("{0} New bound at {1}", bestSoFarValue, string.Join(" ", root)));
                     }
                 }
 
@@ -77,6 +100,9 @@ namespace TaskSchedule.Algo.Schedulers
                 return;
             }
 
+            if (executionTime != null && stopwatch.Elapsed > executionTime)
+                return;
+
             foreach (var d in GetDescendatns(root))
             {
                 Traverse(d);
@@ -84,37 +110,22 @@ namespace TaskSchedule.Algo.Schedulers
         }
 
         List<int> buffer = new Node();
+
+        public DfsScheduler(TimeSpan? executionTime = null)
+        {
+            this.executionTime = executionTime;
+        }
+
         private int ComputeEstimation(int used)
         {
             return buffer[used];
             //return (int)Math.Ceiling(jobs.Skip(used).Sum() * 1.0 / machinesCount);
             //return jobs.Skip(used).Max();
         }
-
-        private void Seed()
-        {
-            var r = new Random(17);
-            var initialGuess = new int[jobs.Length];
-            for (int i = 0; i < jobs.Length; i++)
-            {
-                initialGuess[i] = (r.Next(machinesCount));
-            }
-            bestSoFarValue = ComputeSchedule(initialGuess.ToList());
-            bestSoFarTuple = initialGuess;
-        }
-
+        
         [DebuggerStepThrough]
         public IEnumerable<Node> GetDescendatns(Node node)
         {
-            if (node.Count == 2)
-            {
-                for (int i = 0; i < machinesCount - 1; i++)
-                {
-                    var desc = new Node(node) { i };
-                    yield return desc;
-                }
-            }
-
             for (int i = 0; i < machinesCount; i++)
             {
                 var desc = new Node(node) { i };
